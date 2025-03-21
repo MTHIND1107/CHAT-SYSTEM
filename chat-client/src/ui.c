@@ -66,3 +66,36 @@ void init_ui() {
     wmove(input_win, 1, 3);
     wrefresh(input_win);
 }
+
+void add_to_history(char *message) {
+    // Shift history up if we've reached max lines
+    if (output_lines >= max_output_lines) {
+        for (int i = 0; i < max_output_lines - 1; i++) {
+            strcpy(message_history[i], message_history[i + 1]);
+        }
+        strcpy(message_history[max_output_lines - 1], message);
+    } else {
+        strcpy(message_history[output_lines], message);
+        output_lines++;
+    }
+
+    // Redraw output window content
+    werase(output_win);
+
+    // Draw border
+    wattron(output_win, COLOR_PAIR(3));
+    wborder(output_win, '|', '|', '-', '-', '+', '+', '+', '+');
+    wattroff(output_win, COLOR_PAIR(3));
+
+    // Add header
+    wattron(output_win, COLOR_PAIR(2));
+    mvwprintw(output_win, 0, COLS / 2 - 4, " Messages ");
+    wattroff(output_win, COLOR_PAIR(2));
+
+    // Print message history
+    for (int i = 0; i < output_lines; i++) {
+        mvwprintw(output_win, i + 1, 1, "%s", message_history[i]);
+    }
+
+    wrefresh(output_win);
+}
