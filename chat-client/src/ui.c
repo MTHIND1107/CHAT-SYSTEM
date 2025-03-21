@@ -99,3 +99,50 @@ void add_to_history(char *message) {
 
     wrefresh(output_win);
 }
+
+void display_message(char *buffer) {
+    // Parse message format: XXX.XXX.XXX.XXX_[AAAAA]_>>_aaaa..._(HH:MM:SS)
+    char ip[16], username[6], message[MESSAGE_CHUNK_SIZE + 1], timestamp[9];
+    char direction[3];
+
+    // Extract message components
+    sscanf(buffer, "%15[^_]_[%5[^]]]_%2[^_]_%40[^_]_(%8[^)])", ip, username, direction, message, timestamp);
+
+    // Determine if this is my message or someone else's
+    if (strcmp(username, my_username) == 0) {
+        strcpy(direction, ">>");
+    } else {
+        strcpy(direction, "<<");
+    }
+
+    // Format for display - match the screenshot format
+    char formatted[BUFFER_SIZE];
+    snprintf(formatted, BUFFER_SIZE, "%-15s [%-5s] %s %-40s%15s", ip, username, direction, message, timestamp);
+
+    add_to_history(formatted);
+}
+
+void *handle_incoming_messages(void *arg) {
+    int socket = *(int *)arg;
+    char buffer[BUFFER_SIZE];
+
+    while (1) {
+        int bytes_received = recv(socket, buffer, sizeof(buffer), 0);
+        if (bytes_received <= 0) {
+            break; // Connection closed
+        }
+        buffer[bytes_received] = '\0';
+
+        display_message(buffer);
+    }
+
+    // If we get here, the server has disconnected
+    add_to_history("*** Server connection lost ***");
+    return NULL;
+}
+
+void get_timestamp(char *timestamp) {
+    time_t now = time(NULL);
+    struct tm *tm = localtime(&now);
+    sprintf(timestamp, "%02d:%02d:%02d", tm->tm_hour, tm->tm_min, tm->tm_sec);
+}
