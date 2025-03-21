@@ -16,12 +16,6 @@
 #define BUFFER_SIZE 1024
 #define MESSAGE_CHUNK_SIZE 40
 
-typedef struct {
-    char ip[16];
-    char username[6];
-    int socket_fd;
-} ClientContext;
-
 // Function prototypes
 void init_ui(void);
 void add_to_history(char *message);
@@ -29,5 +23,9 @@ void display_message(char *buffer);
 void *handle_incoming_messages(void *arg);
 void get_timestamp(char *timestamp);
 void get_my_ip(int socket);
+
+// Global variables
+extern WINDOW *input_win;
+extern WINDOW *output_win;
 
 #endif
