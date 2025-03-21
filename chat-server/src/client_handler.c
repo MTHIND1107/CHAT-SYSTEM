@@ -113,3 +113,14 @@ void remove_client(int socket) {
     }
     pthread_mutex_unlock(&client_list_mutex);
 }
+
+void cleanup() {
+    pthread_mutex_lock(&client_list_mutex);
+    while (client_list) {
+        Client *temp = client_list;
+        client_list = client_list->next;
+        close(temp->socket);
+        free(temp);
+    }
+    pthread_mutex_unlock(&client_list_mutex);
+}
