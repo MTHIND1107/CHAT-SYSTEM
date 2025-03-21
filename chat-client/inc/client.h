@@ -22,7 +22,7 @@ void add_to_history(char *message);
 void display_message(char *buffer);
 void *handle_incoming_messages(void *arg);
 void get_timestamp(char *timestamp);
-void get_my_ip(int socket);
+void get_client_ip(int socket);
 
 // Global variables
 extern WINDOW *input_win;
