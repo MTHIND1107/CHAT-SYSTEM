@@ -89,3 +89,27 @@ void broadcast_message(char *message, int sender_socket, char *sender_username, 
     }
     pthread_mutex_unlock(&client_list_mutex);
 }
+
+void add_client(Client *client) {
+    pthread_mutex_lock(&client_list_mutex);
+    client->next = client_list;
+    client_list = client;
+    pthread_mutex_unlock(&client_list_mutex);
+}
+
+void remove_client(int socket) {
+    pthread_mutex_lock(&client_list_mutex);
+    Client **pp = &client_list;
+    Client *temp;
+    
+    while (*pp) {
+        if ((*pp)->socket == socket) {
+            temp = *pp;
+            *pp = (*pp)->next;
+            free(temp);
+            break;
+        }
+        pp = &(*pp)->next;
+    }
+    pthread_mutex_unlock(&client_list_mutex);
+}
