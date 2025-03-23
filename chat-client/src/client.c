@@ -4,6 +4,25 @@
 char my_ip[16];
 char my_username[6];
 
+void *handle_incoming_messages(void *arg) {
+    int socket = *(int *)arg;
+    char buffer[BUFFER_SIZE];
+
+    while (1) {
+        int bytes_received = recv(socket, buffer, sizeof(buffer), 0);
+        if (bytes_received <= 0) {
+            break; // Connection closed
+        }
+        buffer[bytes_received] = '\0';
+
+        display_message(buffer);
+    }
+
+    // If we get here, the server has disconnected
+    add_to_history("*** Server connection lost ***");
+    return NULL;
+} 
+
 int main(int argc, char *argv[]) {
     if (argc != 5 || strcmp(argv[1], "-user") != 0 || strcmp(argv[3], "-server") != 0) {
         fprintf(stderr, "Usage: %s -user <username> -server <server>\n", argv[0]);
@@ -75,50 +94,33 @@ int main(int argc, char *argv[]) {
     char input_buffer[81]; // 80 chars max + null terminator
     char send_buffer[BUFFER_SIZE];
 
-    while (1) {
-        // Clear input area and redraw prompt
-        wmove(input_win, 1, 1);
-        wclrtoeol(input_win);
-        mvwprintw(input_win, 1, 1, "> ");
-        wrefresh(input_win);
+while (1) {
+    // Clear input area and redraw prompt
+    wmove(input_win, 1, 1);
+    wclrtoeol(input_win);
+    mvwprintw(input_win, 1, 1, "> ");
+    wrefresh(input_win);
 
-        // Get input (up to 80 chars)
-        echo();
-        wgetnstr(input_win, input_buffer, 80);
-        noecho();
-        input_buffer[80] = '\0'; // Ensure null termination
+    // Get input (up to 80 chars)
+    echo();
+    wgetnstr(input_win, input_buffer, 80);
+    noecho();
+    input_buffer[80] = '\0'; // Ensure null termination
 
-        // Check for exit command
-        if (strcmp(input_buffer, ">>bye<<") == 0) {
-            if (send(socket_fd, input_buffer, strlen(input_buffer), 0) < 0) {
-                perror("Failed to send exit message");
-            }
-            break;
-        }
-
-        // Send message to server
-        if (send(socket_fd, input_buffer, strlen(input_buffer), 0) < 0) {
-            perror("Failed to send message");
-            break;
-        }
-
-        // Add outgoing message to our own display
-        char timestamp[9];
-        get_timestamp(timestamp);
-
-        // Calculate safe size for message
-        size_t max_input_len = BUFFER_SIZE - snprintf(NULL, 0, "%s_[%s]>>_(%s)", my_ip, my_username, timestamp) - 1;
-
-        if (strlen(input_buffer) > max_input_len) {
-            input_buffer[max_input_len] = '\0'; // Truncate safely
-        }
-
-        // Safe message formatting
-        snprintf(send_buffer, BUFFER_SIZE - 1, "%s_[%s]>>%s_(%s)", my_ip, my_username, input_buffer, timestamp);
-        send_buffer[BUFFER_SIZE - 1] = '\0';
-
-        display_message(send_buffer);
+    // Send message to server
+    if (send(socket_fd, input_buffer, strlen(input_buffer), 0) < 0) {
+        perror("Failed to send message");
+        break;
     }
+
+    // Add outgoing message to our own display
+    char timestamp[9];
+    get_timestamp(timestamp);
+
+    // Format outgoing message
+    format_outgoing_message(send_buffer, my_ip, my_username, input_buffer, timestamp);
+    display_message(send_buffer);
+}
 
     // Cleanup
     pthread_cancel(thread_id);
@@ -160,4 +162,8 @@ void get_client_ip(int socket) {
             freeifaddrs(ifaddr);
         }
     }
+}
+
+void format_outgoing_message(char *buffer, const char *ip, const char *username, const char *message, const char *timestamp) {
+    snprintf(buffer, BUFFER_SIZE, "%s [%s] >> %s (%s)", ip, username, message, timestamp);
 }

@@ -67,21 +67,21 @@ void *handle_client(void *arg) {
 }
 
 void broadcast_message(char *message, int sender_socket, char *sender_username, char *sender_ip) {
-    char chunks[MESSAGE_CHUNK_SIZE + 1][MESSAGE_CHUNK_SIZE + 1];
+    char chunks[10][MESSAGE_CHUNK_SIZE + 1];
     int num_chunks;
-    
-    // Split message into chunks (respecting word boundaries if possible)
+
+    // Split message into 40-character chunks
     split_message(message, chunks, &num_chunks);
-    
+
     char formatted_message[BUFFER_SIZE];
     char timestamp[9];
     get_timestamp(timestamp);
-    
+
     pthread_mutex_lock(&client_list_mutex);
     for (Client *client = client_list; client != NULL; client = client->next) {
-        if (client->socket != sender_socket) {
+        if (client->socket != sender_socket) { // Don't send back to the sender
             for (int i = 0; i < num_chunks; i++) {
-                snprintf(formatted_message, BUFFER_SIZE, "%s_[%s]_>>_%s_(%s)", 
+                snprintf(formatted_message, BUFFER_SIZE, "%s [%s] >> %s (%s)", 
                          sender_ip, sender_username, chunks[i], timestamp);
                 send(client->socket, formatted_message, strlen(formatted_message), 0);
             }
