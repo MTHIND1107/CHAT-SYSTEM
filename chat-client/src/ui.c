@@ -122,25 +122,6 @@ void display_message(char *buffer) {
     add_to_history(formatted);
 }
 
-void *handle_incoming_messages(void *arg) {
-    int socket = *(int *)arg;
-    char buffer[BUFFER_SIZE];
-
-    while (1) {
-        int bytes_received = recv(socket, buffer, sizeof(buffer), 0);
-        if (bytes_received <= 0) {
-            break; // Connection closed
-        }
-        buffer[bytes_received] = '\0';
-
-        display_message(buffer);
-    }
-
-    // If we get here, the server has disconnected
-    add_to_history("*** Server connection lost ***");
-    return NULL;
-}
-
 void get_timestamp(char *timestamp) {
     time_t now = time(NULL);
     struct tm *tm = localtime(&now);
