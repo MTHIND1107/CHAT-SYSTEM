@@ -102,11 +102,13 @@ void add_to_history(char *message) {
 
 void display_message(char *buffer) {
     // Parse message format: XXX.XXX.XXX.XXX_[AAAAA]_>>_aaaa..._(HH:MM:SS)
-    char ip[16], username[6], message[MESSAGE_CHUNK_SIZE + 1], timestamp[9];
-    char direction[3];
+    char ip[16], username[6], timestamp[9];
+    char message[BUFFER_SIZE]; // Use larger buffer for message
+    char direction[3]; // To store ">>" or "<<"
 
     // Extract message components
-    sscanf(buffer, "%15s [%5[^]]] %2s %[^(] (%8[^)])", ip, username, direction, message, timestamp);
+    sscanf(buffer, "%15s [%5[^]]] %2s %[^(] (%8[^)])",
+         ip, username, direction, message, timestamp);
 
     // Determine if this is my message or someone else's
     if (strcmp(username, my_username) == 0) {
@@ -115,15 +117,9 @@ void display_message(char *buffer) {
         strcpy(direction, "<<"); // Incoming message
     }
 
-    // Format for display - match the screenshot format
+    // Format for display
     char formatted[BUFFER_SIZE];
     snprintf(formatted, BUFFER_SIZE, "%-15s [%-5s] %s %-40s%15s", ip, username, direction, message, timestamp);
 
     add_to_history(formatted);
-}
-
-void get_timestamp(char *timestamp) {
-    time_t now = time(NULL);
-    struct tm *tm = localtime(&now);
-    sprintf(timestamp, "%02d:%02d:%02d", tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
