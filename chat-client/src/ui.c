@@ -106,13 +106,13 @@ void display_message(char *buffer) {
     char direction[3];
 
     // Extract message components
-    sscanf(buffer, "%15[^_]_[%5[^]]]_%2[^_]_%40[^_]_(%8[^)])", ip, username, direction, message, timestamp);
+    sscanf(buffer, "%15s [%5[^]]] %2s %[^(] (%8[^)])", ip, username, direction, message, timestamp);
 
     // Determine if this is my message or someone else's
     if (strcmp(username, my_username) == 0) {
-        strcpy(direction, ">>");
+        strcpy(direction, ">>"); // Outgoing message
     } else {
-        strcpy(direction, "<<");
+        strcpy(direction, "<<"); // Incoming message
     }
 
     // Format for display - match the screenshot format

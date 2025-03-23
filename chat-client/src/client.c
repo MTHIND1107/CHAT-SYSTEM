@@ -107,12 +107,9 @@ while (1) {
     noecho();
     input_buffer[80] = '\0'; // Ensure null termination
 
-    // Check for exit command
-    if (strcmp(input_buffer, ">>bye<<") == 0) {
-        if (send(socket_fd, input_buffer, strlen(input_buffer), 0) < 0) {
-            perror("Failed to send exit message");
-        }
-        break;
+    // Check if input is empty
+    if (strlen(input_buffer) == 0) {
+        continue; // Don't send empty messages
     }
 
     // Send message to server

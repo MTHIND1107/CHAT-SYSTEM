@@ -83,7 +83,11 @@ void broadcast_message(char *message, int sender_socket, char *sender_username, 
             for (int i = 0; i < num_chunks; i++) {
                 snprintf(formatted_message, BUFFER_SIZE, "%s [%s] << %s (%s)", 
                          sender_ip, sender_username, chunks[i], timestamp);
-                send(client->socket, formatted_message, strlen(formatted_message), 0);
+
+                // Make sure we're sending the full formatted message
+                if (send(client->socket, formatted_message, strlen(formatted_message), 0) < 0) {
+                    perror("Failed to send message to client");
+                }
             }
         }
     }
