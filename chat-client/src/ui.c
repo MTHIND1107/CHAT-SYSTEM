@@ -7,10 +7,6 @@ int output_lines = 0;
 int max_output_lines = 10;
 char message_history[10][BUFFER_SIZE];
 
-// External variables declared in client.c
-extern char my_ip[16];
-extern char my_username[6];
-
 void init_ui() {
     // Initialize ncurses
     initscr();
@@ -119,7 +115,7 @@ void display_message(char *buffer) {
 
     // Format for display
     char formatted[BUFFER_SIZE];
-    snprintf(formatted, BUFFER_SIZE, "%-15s [%-5s] %s %-40s%15s", ip, username, direction, message, timestamp);
+    snprintf(formatted, BUFFER_SIZE, "%-15s [%-5s] %s %s (%s)", ip, username, direction, message, timestamp);
 
     add_to_history(formatted);
 }
