@@ -81,7 +81,7 @@ void broadcast_message(char *message, int sender_socket, char *sender_username, 
     for (Client *client = client_list; client != NULL; client = client->next) {
         if (client->socket != sender_socket) { // Don't send back to the sender
             for (int i = 0; i < num_chunks; i++) {
-                snprintf(formatted_message, BUFFER_SIZE, "%s [%s] >> %s (%s)", 
+                snprintf(formatted_message, BUFFER_SIZE, "%s [%s] << %s (%s)", 
                          sender_ip, sender_username, chunks[i], timestamp);
                 send(client->socket, formatted_message, strlen(formatted_message), 0);
             }
