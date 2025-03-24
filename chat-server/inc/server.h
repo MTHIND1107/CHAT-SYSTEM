@@ -23,6 +23,8 @@ typedef struct Client {
 
 extern Client *client_list;
 extern pthread_mutex_t client_list_mutex;
+extern int active_threads;
+extern pthread_mutex_t thread_count_mutex;
 
 // Function prototypes
 void *handle_client(void *arg);

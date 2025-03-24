@@ -54,14 +54,13 @@ void *handle_client(void *arg) {
     // Remove client from the list
     remove_client(socket);
     close(socket);
-    printf("Client disconnected: %s (%s)\n", client->username, client->ip);
+    free(arg);
+    //printf("Client disconnected: %s (%s)\n", client->username, client->ip);
     
-    // Check if this was the last client
-    pthread_mutex_lock(&client_list_mutex);
-    if (client_list == NULL) {
-        printf("No more clients connected. Server can be shut down.\n");
-    }
-    pthread_mutex_unlock(&client_list_mutex);
+    // Decrement active thread count
+    pthread_mutex_lock(&thread_count_mutex);
+    active_threads--;
+    pthread_mutex_unlock(&thread_count_mutex);
     
     return NULL;
 }
