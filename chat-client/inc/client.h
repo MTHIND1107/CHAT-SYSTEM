@@ -27,5 +27,7 @@ void get_client_ip(int socket);
 // Global variables
 extern WINDOW *input_win;
 extern WINDOW *output_win;
+extern char my_ip[16];
+extern char my_username[6];
 
 #endif
