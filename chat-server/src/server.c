@@ -22,6 +22,13 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+    // Set socket options to reuse address
+    int opt = 1;
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+            close(server_fd);
+            exit(EXIT_FAILURE);
+    }
+
     // Bind socket
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
@@ -41,6 +48,10 @@ int main() {
 
     printf("Server listening on port %d...\n", PORT);
 
+    // Set server socket to non-blocking
+    int flags = fcntl(server_fd, F_GETFL, 0);
+    fcntl(server_fd, F_SETFL, flags | O_NONBLOCK);
+    
     while (server_running) {
         // Accept new connection (non-blocking)
         new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen);
@@ -81,7 +92,7 @@ int main() {
             had_connections = 1;
             pthread_mutex_unlock(&thread_count_mutex);
         }
-        
+    
     }
 
     // Check if all clients have disconnected and we've had connections before
@@ -94,8 +105,6 @@ int main() {
     // Small sleep to prevent high CPU usage
     usleep(100000); // 100ms
 }
-
-
     // Cleanup before shutting down
     cleanup();
     close(server_fd);

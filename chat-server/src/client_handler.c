@@ -1,5 +1,9 @@
 #include "../inc/server.h"
 
+// External declaration for active_threads and mutex
+extern int active_threads;
+extern pthread_mutex_t thread_count_mutex;
+
 void *handle_client(void *arg) {
     int socket = *(int *)arg;
     char buffer[BUFFER_SIZE];
