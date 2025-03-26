@@ -17,8 +17,8 @@ void init_ui() {
 
     // Define color pairs
     init_pair(1, COLOR_WHITE, COLOR_BLACK);  // Default
-    init_pair(2, COLOR_BLACK, COLOR_RED);    // Headers
-    init_pair(3, COLOR_RED, COLOR_BLACK);    // Borders
+    init_pair(2, COLOR_BLACK, COLOR_MAGENTA);    // Headers
+    init_pair(3, COLOR_MAGENTA, COLOR_BLACK);    // Borders
 
     // Calculate window sizes
     int message_height = LINES - 4;
@@ -31,7 +31,7 @@ void init_ui() {
     // Enable scrolling for output window
     scrollok(output_win, TRUE);
 
-    // Draw borders with red color
+    // Draw borders with pink color
     wattron(output_win, COLOR_PAIR(3));
     wborder(output_win, '|', '|', '-', '-', '+', '+', '+', '+');
     wattroff(output_win, COLOR_PAIR(3));
@@ -40,7 +40,7 @@ void init_ui() {
     wborder(input_win, '|', '|', '-', '-', '+', '+', '+', '+');
     wattroff(input_win, COLOR_PAIR(3));
 
-    // Add headers with black on red
+    // Add headers with black on pink
     wattron(output_win, COLOR_PAIR(2));
     mvwprintw(output_win, 0, COLS / 2 - 4, " Messages ");
     wattroff(output_win, COLOR_PAIR(2));
