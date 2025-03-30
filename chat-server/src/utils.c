@@ -11,28 +11,42 @@ void split_message(char *message, char chunks[][MESSAGE_CHUNK_SIZE + 1], int *nu
         return;
     }
     
-    // Split into chunks of maximum MESSAGE_CHUNK_SIZE characters
-    int chunk_idx = 0;
-    int remaining = len;
-    int pos = 0;
-    
-    while (remaining > 0) {
-        int chunk_size = (remaining > MESSAGE_CHUNK_SIZE) ? MESSAGE_CHUNK_SIZE : remaining;
+    int start = 0;
+    while (start < len && *num_chunks < 10) {
+        // Calculate remaining length
+        int remaining = len - start;
         
-        // Copy this chunk
-        strncpy(chunks[chunk_idx], message + pos, chunk_size);
-        chunks[chunk_idx][chunk_size] = '\0';
+        // If remaining fits in one chunk
+        if (remaining <= MESSAGE_CHUNK_SIZE) {
+            strcpy(chunks[*num_chunks], message + start);
+            (*num_chunks)++;
+            break;
+        }
+
+        // Find last space before chunk boundary
+        int split_pos = start + MESSAGE_CHUNK_SIZE;
+        while (split_pos > start && message[split_pos] != ' ') {
+            split_pos--;
+        }
+
+        // If no space found within reasonable distance
+        if (split_pos <= start + MESSAGE_CHUNK_SIZE - 10) {
+            split_pos = start + MESSAGE_CHUNK_SIZE;
+        }
+
+        // Copy the chunk
+        int chunk_len = split_pos - start;
+        strncpy(chunks[*num_chunks], message + start, chunk_len);
+        chunks[*num_chunks][chunk_len] = '\0';
         
-        // Update counters
-        pos += chunk_size;
-        remaining -= chunk_size;
-        chunk_idx++;
+        // Remove trailing space if present
+        if (chunks[*num_chunks][chunk_len-1] == ' ') {
+            chunks[*num_chunks][chunk_len-1] = '\0';
+        }
         
-        // Prevent buffer overflow
-        if (chunk_idx >= 10) break;
+        (*num_chunks)++;
+        start = split_pos + (message[split_pos] == ' ' ? 1 : 0);
     }
-    
-    *num_chunks = chunk_idx;
 }
 
 // Get current timestamp in HH:MM:SS format

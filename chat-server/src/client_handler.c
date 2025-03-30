@@ -76,7 +76,6 @@ void broadcast_message(char *message, int sender_socket, char *sender_username, 
     // Split message into 40-character chunks
     split_message(message, chunks, &num_chunks);
 
-    char formatted_message[BUFFER_SIZE];
     char timestamp[9];
     get_timestamp(timestamp);
 
@@ -84,13 +83,15 @@ void broadcast_message(char *message, int sender_socket, char *sender_username, 
     for (Client *client = client_list; client != NULL; client = client->next) {
         if (client->socket != sender_socket) { // Don't send back to the sender
             for (int i = 0; i < num_chunks; i++) {
-                snprintf(formatted_message, BUFFER_SIZE, "%s [%s] << %s (%s)", 
+                char formatted[BUFFER_SIZE];
+                snprintf(formatted, BUFFER_SIZE, "%s [%s] << %s (%s)\n", 
                          sender_ip, sender_username, chunks[i], timestamp);
 
                 // Make sure we're sending the full formatted message
-                if (send(client->socket, formatted_message, strlen(formatted_message), 0) < 0) {
+                if (send(client->socket, formatted, strlen(formatted), 0) < 0) {
                     perror("Failed to send message to client");
                 }
+                usleep(5000); // Small delay between chunks
             }
         }
     }
