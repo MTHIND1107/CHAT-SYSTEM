@@ -97,25 +97,18 @@ void add_to_history(char *message) {
 }
 
 void display_message(char *buffer) {
-    // Parse message format: XXX.XXX.XXX.XXX_[AAAAA]_>>_aaaa..._(HH:MM:SS)
-    char ip[16], username[6], timestamp[9];
-    char message[BUFFER_SIZE]; // Use larger buffer for message
-    char direction[3]; // To store ">>" or "<<"
-
-    // Extract message components
-    sscanf(buffer, "%15s [%5[^]]] %2s %[^(] (%8[^)])",
-         ip, username, direction, message, timestamp);
-
-    // Determine if this is my message or someone else's
-    if (strcmp(username, my_username) == 0) {
-        strcpy(direction, ">>"); // Outgoing message
+    char ip[16], username[6], direction[3], message[BUFFER_SIZE], timestamp[9];
+    
+    // Strict parsing with error fallback
+    if (sscanf(buffer, "%15s [%5[^]]] %2s %[^(](%8[^)])", 
+              ip, username, direction, message, timestamp) == 5) {
+        char formatted[BUFFER_SIZE];
+        snprintf(formatted, sizeof(formatted), 
+                "%-15s [%-5s] %s %s (%s)",
+                ip, username, direction, message, timestamp);
+        add_to_history(formatted);
     } else {
-        strcpy(direction, "<<"); // Incoming message
+        add_to_history(buffer); // Fallback display
     }
-
-    // Format for display
-    char formatted[BUFFER_SIZE];
-    snprintf(formatted, BUFFER_SIZE, "%-15s [%-5s] %s %s (%s)", ip, username, direction, message, timestamp);
-
-    add_to_history(formatted);
+    wrefresh(output_win);
 }

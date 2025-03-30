@@ -15,9 +15,19 @@ void *handle_incoming_messages(void *arg) {
         }
         buffer[bytes_received] = '\0';
 
-        display_message(buffer);
-    }
-
+       // Handle multi-chunk messages
+       char *msg = buffer;
+       while (*msg) {
+           char *end = strchr(msg, '\n');
+           if (end) *end = '\0';
+           
+           if (strlen(msg) > 0) {
+               display_message(msg);
+           }
+           if (!end) break;
+           msg = end + 1;
+       }
+   }
     // If we get here, the server has disconnected
     add_to_history("*** Server connection lost ***");
     return NULL;
