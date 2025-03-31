@@ -7,10 +7,13 @@
  * This file contains the main entry point for the chat server. It handles server socket creation,
  * connection listening, and delegates client connections to handler threads. The server runs
  * until explicitly shut down or all clients disconnect.
+ *  Resources:
+ * https://www.geeksforgeeks.org/socket-programming-cc/ 
+ * https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/ 
  */
 #include "../inc/server.h"
-#include <fcntl.h>      // For fcntl(), F_GETFL, F_SETFL
-#include <unistd.h>     // For usleep()
+#include <fcntl.h>     //https://pubs.opengroup.org/onlinepubs/009695299/basedefs/fcntl.h.html 
+#include <unistd.h>    // For usleep()
 
 Client *client_list = NULL;
 pthread_mutex_t client_list_mutex = PTHREAD_MUTEX_INITIALIZER;

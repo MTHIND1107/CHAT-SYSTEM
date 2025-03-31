@@ -6,6 +6,8 @@
  * DESCRIPTION:
  * This file contains all client connection management logic including message handling,
  * broadcasting, and thread-safe client list operations for the chat server.
+ * Resources:
+ * https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/ 
  */
 #include "../inc/server.h"
 

@@ -6,6 +6,8 @@
  * DESCRIPTION:
  * This file contains utility functions for message processing and time handling
  * used by the chat server.
+ *  * Resources:
+ * https://www.prepbytes.com/blog/arrays/two-dimensional-array-of-characters/  
  */
 #include "../inc/server.h"
 

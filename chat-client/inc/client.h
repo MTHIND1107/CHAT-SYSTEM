@@ -35,9 +35,14 @@ void get_timestamp(char *timestamp);
 void get_client_ip(int socket);
 
 // Global variables
-extern WINDOW *input_win;
-extern WINDOW *output_win;
-extern char my_ip[16];
-extern char my_username[6];
+extern WINDOW *input_win; /*Both the ncurses windows handles terminal UI states that must be shared
+ across multiple functions (input handling, display updates, etc.) while maintaining consistency.*/
+extern WINDOW *output_win; 
+extern char my_ip[16]; /* The client's IP is a fixed identity marker used in all network communications.
+Storing it globally prevents repeated calls  */
+extern char my_username[6];/*Acts as immutable session identity after login.
+Global access is necessary because display functions need it for message formatting,
+Network thread uses it for outgoing messages */
+
 
 #endif

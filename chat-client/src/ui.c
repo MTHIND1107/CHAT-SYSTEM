@@ -7,6 +7,8 @@
  * This file contains all functions related to the terminal-based user interface
  * including window management, message display, and input handling using ncurses library.
  * It provides the visual interface for the chat client application.
+ * Resources:
+ * https://www.codedrome.com/an-introduction-to-ncurses-in-c/
  */
 #include "../inc/client.h"
 

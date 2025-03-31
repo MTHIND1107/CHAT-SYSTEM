@@ -8,6 +8,10 @@
  * establishes the network connection to the server, initializes the user interface, and manages the
  * primary message processing loop. The program coordinates between network communication (client.c),
  * user interface (ui.c), and utility functions (utils.c) to provide a complete chat client solution.
+ * Resources:
+ * https://www.geeksforgeeks.org/socket-programming-cc/ 
+ * https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/ 
+ * https://www.codedrome.com/an-introduction-to-ncurses-in-c/ 
  */
 #include "../inc/client.h"
 

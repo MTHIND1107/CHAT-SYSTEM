@@ -5,7 +5,7 @@
  * FIRST VERSION: 31-03-2025
  * DESCRIPTION:
  * This file contains helper utility functions for the chat client including
- * timestamp generation and other supporting functions.
+ * timestamp generation function.
  */
 #include "../inc/client.h"
 

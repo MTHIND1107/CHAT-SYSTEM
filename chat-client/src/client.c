@@ -7,6 +7,9 @@
  * This file contains the main client logic including connection handling, message processing,
  * and user interface management. It implements the core functionality for connecting to the chat server,
  * sending/receiving messages, and managing the client lifecycle.
+ * Resources:
+ * https://www.geeksforgeeks.org/socket-programming-cc/ 
+ * https://www.geeksforgeeks.org/mutex-lock-for-linux-thread-synchronization/ 
  */
 #include "../inc/client.h"
 

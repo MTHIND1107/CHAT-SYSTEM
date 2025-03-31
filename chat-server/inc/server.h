@@ -7,6 +7,8 @@
  * This header file contains all necessary definitions, structures, and function prototypes
  * for the chat server implementation. It manages client connections, message broadcasting,
  * and thread synchronization for a multi-client chat server.
+ * Resources:
+ * https://www.prepbytes.com/blog/arrays/two-dimensional-array-of-characters/  
  */
 #ifndef SERVER_H
 #define SERVER_H
@@ -31,10 +33,11 @@ typedef struct Client {
     struct Client *next;
 } Client;
 
-extern Client *client_list;
-extern pthread_mutex_t client_list_mutex;
-extern int active_threads;
-extern pthread_mutex_t thread_count_mutex;
+//Global variables
+extern Client *client_list; /*Required across all connection handlers for broadcast operations and client management.*/
+extern pthread_mutex_t client_list_mutex;/*Must be shared by all threads accessing client_list*/
+extern int active_threads;/*System-wide thread count needed for server shutdown coordination*/
+extern pthread_mutex_t thread_count_mutex;/*Ensures increments/decrements of active_threads from any thread context*/
 
 // Function prototypes
 void *handle_client(void *arg);
@@ -42,7 +45,7 @@ void broadcast_message(char *message, int sender_socket, char *sender_username, 
 void add_client(Client *client);
 void remove_client(int socket);
 void cleanup();
-void split_message(char *message, char chunks[][MESSAGE_CHUNK_SIZE + 1], int *num_chunks);
+void split_message(char *message, char chunks[][MESSAGE_CHUNK_SIZE + 1], int *num_chunks); // 2-D character array  
 void get_timestamp(char *timestamp);
 
 #endif
