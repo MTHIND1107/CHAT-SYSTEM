@@ -1,10 +1,27 @@
+/*
+ * FILE: client.c
+ * PROJECT: Chat Client Application
+ * PROGRAMMER: [Your Name]
+ * FIRST VERSION: [Date]
+ * DESCRIPTION:
+ * This file contains the main client logic including connection handling, message processing,
+ * and user interface management. It implements the core functionality for connecting to the chat server,
+ * sending/receiving messages, and managing the client lifecycle.
+ */
 #include "../inc/client.h"
 
 // Global variables
 char my_ip[16];
 char my_username[6];
 
-// Add this helper function
+/*
+ * Name    : graceful_exit
+ * Purpose : Cleanly shutdown the client application
+ * Input   : sockfd - int - The socket file descriptor to close
+ * Outputs : NONE
+ * Returns : Nothing
+ * Notes   : Sends shutdown command to server, cleans up ncurses, and exits program
+ */
 void graceful_exit(int sockfd) {
     // Send the shutdown command
     send(sockfd, ">>bye<<", 7, 0);
@@ -15,6 +32,15 @@ void graceful_exit(int sockfd) {
     exit(EXIT_SUCCESS);
 }
 
+/*
+ * Name    : handle_incoming_messages
+ * Purpose : Thread function to handle incoming messages from server
+ * Input   : arg - void* - Pointer to socket file descriptor
+ * Outputs : Displays messages in UI
+ * Returns : NULL on thread exit
+ * Notes   : Continuously listens for messages from server, processes multi-line messages,
+ *           and displays them in the UI. Handles server disconnection.
+ */
 void *handle_incoming_messages(void *arg) {
     int socket = *(int *)arg;
     char buffer[BUFFER_SIZE];
@@ -45,6 +71,16 @@ void *handle_incoming_messages(void *arg) {
     pthread_exit(NULL);
 }
 
+/*
+ * Name    : main
+ * Purpose : Main client entry point
+ * Input   : argc - int - Argument count
+ *           argv - char** - Argument vector
+ * Outputs : NONE
+ * Returns : Exit status
+ * Notes   : Handles command line arguments, establishes server connection,
+ *           initializes UI, and manages message sending thread.
+ */
 int main(int argc, char *argv[]) {
     if (argc != 5 || strcmp(argv[1], "-user") != 0 || strcmp(argv[3], "-server") != 0) {
         fprintf(stderr, "Usage: %s -user <username> -server <server>\n", argv[0]);
@@ -159,12 +195,20 @@ while (1) {
     pthread_join(thread_id, NULL);
     close(socket_fd);
     endwin();
-    printf("Client shut down gracefully.\n");
+    //printf("Client shut down gracefully.\n");
     return 0;
 }
 
 
-// Get Client IP address based on the connected socket
+/*
+ * Name    : get_client_ip
+ * Purpose : Determine client's IP address
+ * Input   : socket - int - Connected socket file descriptor
+ * Outputs : Modifies global my_ip variable
+ * Returns : Nothing
+ * Notes   : Gets the local address from socket connection. If localhost (127.0.0.1),
+ *           scans network interfaces to find real IP address.
+ */
 void get_client_ip(int socket) {
     struct sockaddr_in local_addr;
     socklen_t addr_len = sizeof(local_addr);
@@ -196,6 +240,18 @@ void get_client_ip(int socket) {
     }
 }
 
+/*
+ * Name    : format_outgoing_message
+ * Purpose : Format outgoing message with metadata
+ * Input   : buffer - char* - Output buffer for formatted message
+ *           ip - const char* - Sender's IP address
+ *           username - const char* - Sender's username
+ *           message - const char* - The message content
+ *           timestamp - const char* - Formatted timestamp string
+ * Outputs : Fills buffer with formatted message
+ * Returns : Nothing
+ * Notes   : Creates a standardized message format with all metadata included
+ */
 void format_outgoing_message(char *buffer, const char *ip, const char *username, const char *message, const char *timestamp) {
     snprintf(buffer, BUFFER_SIZE, "%s [%s] >> %s (%s)", ip, username, message, timestamp);
 }

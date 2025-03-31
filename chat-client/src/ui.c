@@ -1,3 +1,13 @@
+/*
+ * FILE: ui.c
+ * PROJECT: Chat Client Application
+ * PROGRAMMER: [Your Name]
+ * FIRST VERSION: [Date]
+ * DESCRIPTION:
+ * This file contains all functions related to the terminal-based user interface
+ * including window management, message display, and input handling using ncurses library.
+ * It provides the visual interface for the chat client application.
+ */
 #include "../inc/client.h"
 
 // Global variables for UI
@@ -7,6 +17,14 @@ int output_lines = 0;
 int max_output_lines = 10;
 char message_history[10][BUFFER_SIZE];
 
+/*
+ * Name    : init_ui
+ * Purpose : Initialize ncurses user interface
+ * Input   : NONE
+ * Outputs : Creates and configures UI windows
+ * Returns : Nothing
+ * Notes   : Sets up color pairs, creates windows, and draws initial borders and headers
+ */
 void init_ui() {
     // Initialize ncurses
     initscr();
@@ -63,6 +81,14 @@ void init_ui() {
     wrefresh(input_win);
 }
 
+/*
+ * Name    : add_to_history
+ * Purpose : Add message to history display
+ * Input   : message - char* - The message to add
+ * Outputs : Updates message display
+ * Returns : Nothing
+ * Notes   : Maintains a rotating buffer of recent messages and updates the display
+ */
 void add_to_history(char *message) {
     // Shift history up if we've reached max lines
     if (output_lines >= max_output_lines) {
@@ -96,6 +122,14 @@ void add_to_history(char *message) {
     wrefresh(output_win);
 }
 
+/*
+ * Name    : display_message
+ * Purpose : Parse and display an incoming message
+ * Input   : buffer - char* - The raw message string to display
+ * Outputs : Updates message display
+ * Returns : Nothing
+ * Notes   : Parses message format and adds to history. Handles malformed messages gracefully
+ */
 void display_message(char *buffer) {
     char ip[16], username[6], direction[3], message[BUFFER_SIZE], timestamp[9];
     

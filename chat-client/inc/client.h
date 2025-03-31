@@ -1,3 +1,13 @@
+/*
+ * FILE: client.h
+ * PROJECT: Chat Client Application
+ * PROGRAMMER: [Your Name]
+ * FIRST VERSION: [Date]
+ * DESCRIPTION:
+ * This header file contains all necessary includes, defines, function prototypes and global variables
+ * for the chat client implementation. It provides the interface for UI handling, network communication,
+ * and message processing between the client and server.
+ */
 #ifndef CLIENT_H
 #define CLIENT_H
 
