@@ -1,3 +1,13 @@
+/*
+ * FILE: server.c
+ * PROJECT: Chat Server Application
+* PROGRAMMER: Manreet Thind
+ * FIRST VERSION: 31-03-2025
+ * DESCRIPTION:
+ * This file contains the main entry point for the chat server. It handles server socket creation,
+ * connection listening, and delegates client connections to handler threads. The server runs
+ * until explicitly shut down or all clients disconnect.
+ */
 #include "../inc/server.h"
 #include <fcntl.h>      // For fcntl(), F_GETFL, F_SETFL
 #include <unistd.h>     // For usleep()
@@ -10,6 +20,17 @@ int active_threads = 0;
 pthread_mutex_t thread_count_mutex = PTHREAD_MUTEX_INITIALIZER;
 int server_running = 1;
 
+/*
+ * Name    : main
+ * Purpose : Server entry point and main control loop
+ * Input   : None (command-line arguments could be added later)
+ * Outputs : 
+ *   - Creates and manages server socket
+ *   - Spawns client handler threads
+ *   - Maintains server running state
+ * Returns : 0 on normal shutdown, 1 on error
+ * Notes   : Uses non-blocking socket operations for clean shutdown
+ */
 int main() {
     int server_fd, new_socket;
     struct sockaddr_in address;

@@ -1,9 +1,26 @@
+/*
+ * FILE: client_handler.c
+ * PROJECT: Chat Server Application
+* PROGRAMMER: Manreet Thind
+ * FIRST VERSION: 31-03-2025
+ * DESCRIPTION:
+ * This file contains all client connection management logic including message handling,
+ * broadcasting, and thread-safe client list operations for the chat server.
+ */
 #include "../inc/server.h"
 
 // External declaration for active_threads and mutex
 extern int active_threads;
 extern pthread_mutex_t thread_count_mutex;
 
+/*
+ * Name    : handle_client
+ * Purpose : Manage communication with a connected client
+ * Input   : arg - void* - Pointer to client socket file descriptor
+ * Outputs : Processes incoming messages and manages client lifecycle
+ * Returns : NULL on thread exit
+ * Notes   : Runs in a separate thread for each connected client
+ */
 void *handle_client(void *arg) {
     int socket = *(int *)arg;
     char buffer[BUFFER_SIZE];
@@ -72,6 +89,17 @@ void *handle_client(void *arg) {
     return NULL;
 }
 
+/*
+ * Name    : broadcast_message
+ * Purpose : Send a message to all connected clients except the sender
+ * Input   : message - char* - The message content
+ *           sender_socket - int - Socket of the sending client
+ *           sender_username - char* - Username of sender
+ *           sender_ip - char* - IP address of sender
+ * Outputs : Sends formatted message to all recipients
+ * Returns : Nothing
+ * Notes   : Thread-safe operation using mutex locks
+ */
 void broadcast_message(char *message, int sender_socket, char *sender_username, char *sender_ip) {
     char chunks[10][MESSAGE_CHUNK_SIZE + 1];
     int num_chunks;
@@ -101,6 +129,14 @@ void broadcast_message(char *message, int sender_socket, char *sender_username, 
     pthread_mutex_unlock(&client_list_mutex);
 }
 
+/*
+ * Name    : add_client
+ * Purpose : Add a new client to the connected clients list
+ * Input   : client - Client* - Pointer to client structure
+ * Outputs : Modifies global client_list
+ * Returns : Nothing
+ * Notes   : Thread-safe operation using mutex locks
+ */
 void add_client(Client *client) {
     pthread_mutex_lock(&client_list_mutex);
     client->next = client_list;
@@ -108,6 +144,15 @@ void add_client(Client *client) {
     pthread_mutex_unlock(&client_list_mutex);
 }
 
+
+/*
+ * Name    : remove_client
+ * Purpose : Remove a client from the connected clients list
+ * Input   : socket - int - Socket descriptor of client to remove
+ * Outputs : Modifies global client_list
+ * Returns : Nothing
+ * Notes   : Thread-safe operation using mutex locks
+ */
 void remove_client(int socket) {
     pthread_mutex_lock(&client_list_mutex);
     Client **pp = &client_list;

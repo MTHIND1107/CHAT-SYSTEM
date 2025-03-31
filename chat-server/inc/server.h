@@ -1,3 +1,13 @@
+/*
+ * FILE: server.h
+ * PROJECT: Chat Server Application
+ * PROGRAMMER: Manreet Thind
+ * FIRST VERSION: 31-03-2025
+ * DESCRIPTION:
+ * This header file contains all necessary definitions, structures, and function prototypes
+ * for the chat server implementation. It manages client connections, message broadcasting,
+ * and thread synchronization for a multi-client chat server.
+ */
 #ifndef SERVER_H
 #define SERVER_H
 

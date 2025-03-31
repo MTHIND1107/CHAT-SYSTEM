@@ -1,5 +1,24 @@
+/*
+ * FILE: utils.c
+ * PROJECT: Chat Server Application
+* PROGRAMMER: Manreet Thind
+ * FIRST VERSION: 31-03-2025
+ * DESCRIPTION:
+ * This file contains utility functions for message processing and time handling
+ * used by the chat server.
+ */
 #include "../inc/server.h"
 
+/*
+ * Name    : split_message
+ * Purpose : Split long messages into fixed-size chunks
+ * Input   : message - char* - Original message to split
+ *           chunks - char[][] - Output array for message chunks
+ *           num_chunks - int* - Output count of chunks created
+ * Outputs : Fills chunks array with message segments
+ * Returns : Nothing
+ * Notes   : Preserves word boundaries when possible
+ */
 void split_message(char *message, char chunks[][MESSAGE_CHUNK_SIZE + 1], int *num_chunks) {
     int len = strlen(message);
     *num_chunks = 0;
@@ -49,7 +68,15 @@ void split_message(char *message, char chunks[][MESSAGE_CHUNK_SIZE + 1], int *nu
     }
 }
 
-// Get current timestamp in HH:MM:SS format
+
+/*
+ * Name    : get_timestamp
+ * Purpose : Generate current time as formatted string
+ * Input   : timestamp - char* - Output buffer (min 9 bytes)
+ * Outputs : Fills buffer with HH:MM:SS formatted time
+ * Returns : Nothing
+ * Notes   : Uses system local time
+ */
 void get_timestamp(char *timestamp) {
     time_t now = time(NULL);
     struct tm *tm = localtime(&now);
