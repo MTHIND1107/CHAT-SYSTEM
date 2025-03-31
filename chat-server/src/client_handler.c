@@ -64,6 +64,9 @@ void *handle_client(void *arg) {
     // Decrement active thread count
     pthread_mutex_lock(&thread_count_mutex);
     active_threads--;
+    if (active_threads == 0) {
+        cleanup();  // Server-wide cleanup
+    }
     pthread_mutex_unlock(&thread_count_mutex);
     
     return NULL;

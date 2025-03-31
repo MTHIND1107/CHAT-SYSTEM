@@ -4,6 +4,17 @@
 char my_ip[16];
 char my_username[6];
 
+// Add this helper function
+void graceful_exit(int sockfd) {
+    // Send the shutdown command
+    send(sockfd, ">>bye<<", 7, 0);
+    
+    // Cleanup
+    endwin();  // Restore terminal
+    close(sockfd);
+    exit(EXIT_SUCCESS);
+}
+
 void *handle_incoming_messages(void *arg) {
     int socket = *(int *)arg;
     char buffer[BUFFER_SIZE];
@@ -28,10 +39,11 @@ void *handle_incoming_messages(void *arg) {
            msg = end + 1;
        }
    }
-    // If we get here, the server has disconnected
-    add_to_history("*** Server connection lost ***");
-    return NULL;
-} 
+    // Server disconnected - silent exit
+    endwin();
+    close(socket);
+    pthread_exit(NULL);
+}
 
 int main(int argc, char *argv[]) {
     if (argc != 5 || strcmp(argv[1], "-user") != 0 || strcmp(argv[3], "-server") != 0) {
@@ -120,6 +132,11 @@ while (1) {
     // Check if input is empty
     if (strlen(input_buffer) == 0) {
         continue; // Don't send empty messages
+    }
+
+    // Check for shutdown command
+    if (strcmp(input_buffer, ">>bye<<") == 0) {
+        graceful_exit(socket_fd);
     }
 
     // Send message to server
