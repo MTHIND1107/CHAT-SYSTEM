@@ -1,8 +1,8 @@
 /*
  * FILE: client.c
  * PROJECT: Chat Client Application
- * PROGRAMMER: [Your Name]
- * FIRST VERSION: [Date]
+ * PROGRAMMER: Manreet Thind
+ * FIRST VERSION: 31-03-2025
  * DESCRIPTION:
  * This file contains the main client logic including connection handling, message processing,
  * and user interface management. It implements the core functionality for connecting to the chat server,

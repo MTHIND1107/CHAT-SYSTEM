@@ -1,8 +1,8 @@
 /*
  * FILE: utils.c
  * PROJECT: Chat Client Application
- * PROGRAMMER: [Your Name]
- * FIRST VERSION: [Date]
+ * PROGRAMMER: Manreet Thind
+ * FIRST VERSION: 31-03-2025
  * DESCRIPTION:
  * This file contains helper utility functions for the chat client including
  * timestamp generation and other supporting functions.

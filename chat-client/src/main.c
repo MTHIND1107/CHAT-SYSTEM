@@ -1,8 +1,8 @@
 /*
  * FILE: main.c
  * PROJECT: Chat Client Application
- * PROGRAMMER: [Your Name] (STUDENT ID: [Your ID])
- * FIRST VERSION: [Date]
+ * PROGRAMMER: Manreet Thind
+ * FIRST VERSION: 31-03-2025
  * DESCRIPTION: 
  * This file contains the main entry point for the chat client program. It handles command-line arguments,
  * establishes the network connection to the server, initializes the user interface, and manages the

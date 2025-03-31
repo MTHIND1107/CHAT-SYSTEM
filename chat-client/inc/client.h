@@ -1,8 +1,8 @@
 /*
  * FILE: client.h
  * PROJECT: Chat Client Application
- * PROGRAMMER: [Your Name]
- * FIRST VERSION: [Date]
+ * PROGRAMMER: Manreet Thind
+ * FIRST VERSION: 31-03-2025
  * DESCRIPTION:
  * This header file contains all necessary includes, defines, function prototypes and global variables
  * for the chat client implementation. It provides the interface for UI handling, network communication,
